@@ -7,7 +7,7 @@ ENV AGENT_FILE_PATH="/app/opentelemetry-javaagent.jar"
 ENV APP_VERSION=${VERSION}
 ENV APP_NAME=${PROJECT_NAME}
 ENV ENVIRONMENT="pat"
-ENV ENDPOINT="http://tracing-analysis-dc-hk.aliyuncs.com/adapt_1g4jj9bdnus@7d441d3f6749462_1g4jj9bdnus@53df7ad2afe8301"
+ENV ENDPOINT=""
 ENV OPTS="-javaagent:${AGENT_FILE_PATH} \
 -Dotel.resource.attributes=service.name=${APP_NAME},service.version=${APP_VERSION},deployment.environment=${ENVIRONMENT} \
 -Dotel.exporter.otlp.protocol=http/protobuf \
