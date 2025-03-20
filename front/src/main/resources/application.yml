@@ -1,0 +1,35 @@
+spring:
+  config:
+    import: nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+  application:
+    name: front
+  cloud:
+    nacos:
+      config:
+        server-addr: 10.75.80.67:8848
+        file-extension: yaml
+        namespace: public
+        group: DEFAULT_GROUP
+        username: admin
+        password: admin
+      discovery:
+        metadata:
+          management.context-path: /actuator  # 确保健康检查路径正确
+        server-addr: 10.75.80.67:8848
+        namespace: public
+        group: DEFAULT_GROUP
+        username: admin
+        password: admin
+    openfeign:
+      httpclient:
+        connection-timeout: 2000
+
+
+logging:
+  level:
+    org.springframework.cloud.loadbalancer: DEBUG  # 核心负载均衡日志
+    reactor.core.publisher: DEBUG                 # 响应式日志（可选）
+    org.springframework.cloud.openfeign: DEBUG
+
+server:
+  port: 28081

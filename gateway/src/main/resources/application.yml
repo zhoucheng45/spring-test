@@ -1,0 +1,28 @@
+spring:
+  config:
+    import: nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: 10.75.80.67:8848
+        file-extension: yaml
+        namespace: public
+        group: DEFAULT_GROUP
+        username: admin
+        password: admin
+      discovery:
+        server-addr: 10.75.80.67:8848
+        namespace: public
+        group: DEFAULT_GROUP
+        username: admin
+        password: admin
+    gateway:
+      routes:
+        - id: front_route
+          uri: lb://front
+          predicates:
+            - Path=/front/**
+server:
+  port: 28080
