@@ -16,11 +16,29 @@
 
 
     <dependencies>
+        <!-- 若你的项目 (当前使用 Spring Boot) 要切换日志框架 -->
+        <!-- Logback (默认) -->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-bootstrap</artifactId>-->
+<!--            <artifactId>spring-cloud-starter-gateway</artifactId>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-log4j2</artifactId>-->
 <!--        </dependency>-->
 
+        <!-- 必须添加 disruptor 依赖 高性能环形队列库，异步日志的核心依赖（不添加会导致退化为同步模式） -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.4.4</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
@@ -42,6 +60,11 @@
             <artifactId>netty-resolver-dns-native-macos</artifactId>
             <version>4.1.107.Final</version> <!-- 需与项目Netty版本一致 -->
             <classifier>osx-aarch_64</classifier> <!-- M1芯片使用osx-aarch_64 -->
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

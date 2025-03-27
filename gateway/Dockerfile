@@ -1,3 +1,16 @@
+
+# 第一阶段:编译Maven项目
+FROM maven:maven:3.9.9-amazoncorretto-21-alpine AS build
+WORKDIR /app
+
+ARG PROJECT_NAME
+
+COPY . .
+WORKDIR /app/before
+RUN mvn clean package -DskipTests=true
+
+
+
 FROM openjdk:21-jdk-slim
 ARG PROJECT_NAME
 ARG VERSION
@@ -15,10 +28,10 @@ ENV OPTS="-javaagent:${AGENT_FILE_PATH} \
 -Dotel.exporter.otlp.metrics.endpoint=${ENDPOINT}/api/otlp/metrics \
 -Dotel.logs.exporter=none "
 
-ENV APP_FILE=${APP_NAME}-${APP_VERSION}.jar
+ENV APP_FILE=${PROJECT_NAME}-${VERSION}.jar
 WORKDIR /app
 COPY ./target/${APP_FILE} /app/
-COPY ./opentelemetry-javaagent.jar /app/
+COPY ../opentelemetry-javaagent.jar /app/
 
 ENTRYPOINT ["sh","-c", "exec java ${OPTS} -jar ${APP_FILE}"]
 

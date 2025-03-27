@@ -2,3 +2,4 @@
 .idea/dataSources
 .idea
 **/target
+/logs

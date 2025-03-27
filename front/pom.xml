@@ -45,6 +45,12 @@
             <version>4.1.107.Final</version> <!-- 需与项目Netty版本一致 -->
             <classifier>osx-aarch_64</classifier> <!-- M1芯片使用osx-aarch_64 -->
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

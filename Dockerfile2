@@ -1,3 +1,10 @@
+# 第一阶段:编译Maven项目
+FROM maven:3.9.9-amazoncorretto-21-alpine AS build
+WORKDIR /app
+ARG PROJECT_NAME
+COPY . .
+RUN mvn clean package -DskipTests=true
+
 FROM openjdk:21-jdk-slim
 ARG PROJECT_NAME
 ARG VERSION
@@ -8,7 +15,7 @@ ENV ENDPOINT=""
 ENV APP_FILE=${PROJECT_NAME}-${VERSION}.jar
 WORKDIR /app
 COPY ./opentelemetry-javaagent.jar /app/
-COPY ./${PROJECT_NAME}/target/${PROJECT_NAME}-${VERSION}.jar /app/
+COPY --from=build /app/${PROJECT_NAME}/target/${PROJECT_NAME}-${VERSION}.jar /app/
 
 ENTRYPOINT ["sh","-c", "exec java -javaagent:/app/opentelemetry-javaagent.jar \
                                   -Dotel.resource.attributes=service.name=${APP_NAME},service.version=${APP_VERSION},deployment.environment=${ENVIRONMENT} \
