@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-slim
+FROM docker.io/openjdk:21-jdk-slim
 ARG PROJECT_NAME
 ARG VERSION
 ENV APP_VERSION=${VERSION}
