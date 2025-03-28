@@ -20,3 +20,11 @@ docker buildx use default
 # 构建并加载镜像
 docker buildx build --build-arg PROJECT_NAME=gateway --build-arg VERSION=0.0.1-SNAPSHOT -t registry-intl.cn-hongkong.aliyuncs.com/my-link/test:gateway-0.0.1-SNAPSHOT . --load
 
+docker run -v ./:/workspace \
+  -v ./config.json:/kaniko/.docker/config.json \
+  gcr.io/kaniko-project/executor:latest \
+  --dockerfile=/workspace/Dockerfile \
+  --context=dir:///workspace \
+  --destination=registry-intl.cn-hongkong.aliyuncs.com/my-link/test:gateway-0.0.1-SNAPSHOT \
+  --build-arg PROJECT_NAME=gateway \
+  --build-arg VERSION=0.0.1-SNAPSHOT
