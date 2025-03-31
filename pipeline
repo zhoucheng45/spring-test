@@ -17,7 +17,7 @@ pipeline {
               runAsUser: 0
             volumeMounts:
               - name: docker-config
-                mountPath: /workspace/docker-config/          
+                mountPath: /workspace/docker-config/
               - name: workspace-volume
                 mountPath: /home/jenkins/agent
           - name: maven
@@ -94,3 +94,5 @@ pipeline {
     }
   }
 }
+
+
