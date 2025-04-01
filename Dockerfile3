@@ -1,0 +1,5 @@
+FROM jenkins/inbound-agent:latest
+
+RUN apt-get update && apt-get install -y \
+    buildah \
+
