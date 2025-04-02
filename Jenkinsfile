@@ -61,8 +61,15 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        container('jnlp'){
-          git url: 'https://github.com/zhoucheng45/spring-test.git', branch: 'master'
+        container('jnlp') {
+          checkout([
+            $class: 'GitSCM',
+            branches: [[name: env.BRANCH_NAME]],
+            extensions: [],
+            userRemoteConfigs: [[
+              url: 'https://github.com/zhoucheng45/spring-test.git'
+            ]]
+          ])
         }
       }
     }
@@ -81,14 +88,24 @@ pipeline {
         steps {
           container('jnlp') {
             script {
-            sh """
-              pwd
-              ls -al
-              cat /workspace/docker-config/auth.json
-              buildah bud --build-arg PROJECT_NAME=${params.PROJECT_NAME} --build-arg VERSION=${params.VERSION} -t app:latest -f Dockerfile .
-              buildah push --authfile /workspace/docker-config/auth.json localhost/app:latest registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${params.VERSION}
-              """
-            }
+                // 获取当前分支名称并清理特殊字符
+                def branchName = env.BRANCH_NAME.replace('/', '-')
+                // 获取完整提交 ID（40 位）
+                def shortCommitId = sh(
+                  returnStdout: true,
+                  script: 'git rev-parse --short HEAD'
+                ).trim()
+                // 动态定义镜像标签
+                def imageTag = "registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${branchName}-${shortCommitId}"
+
+                sh """
+                  pwd
+                  ls -al
+                  cat /workspace/docker-config/auth.json
+                  buildah bud --build-arg PROJECT_NAME=${params.PROJECT_NAME} --build-arg VERSION=${params.VERSION} -t app:${branchName} -f Dockerfile .
+                  buildah push --authfile /workspace/docker-config/auth.json localhost/app:${branchName} ${imageTag}
+                """
+              }
           }
         }
     }
