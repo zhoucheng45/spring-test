@@ -90,9 +90,13 @@ pipeline {
             script {
                 // 获取当前分支名称并清理特殊字符
                 def branchName = env.BRANCH_NAME.replace('/', '-')
-
+                // 获取完整提交 ID（40 位）
+                def shortCommitId = sh(
+                  returnStdout: true,
+                  script: 'git rev-parse --short HEAD'
+                ).trim()
                 // 动态定义镜像标签
-                def imageTag = "registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${branchName}-${params.VERSION}"
+                def imageTag = "registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${branchName}-${shortCommitId}"
 
                 sh """
                   pwd
