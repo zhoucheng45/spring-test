@@ -61,15 +61,8 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        container('jnlp') {
-          checkout([
-            $class: 'GitSCM',
-            branches: [[name: env.BRANCH_NAME]],
-            extensions: [],
-            userRemoteConfigs: [[
-              url: 'https://github.com/zhoucheng45/spring-test.git'
-            ]]
-          ])
+        container('jnlp'){
+          git url: 'https://github.com/zhoucheng45/spring-test.git', branch: 'master'
         }
       }
     }
