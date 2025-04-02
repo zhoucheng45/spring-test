@@ -88,14 +88,20 @@ pipeline {
         steps {
           container('jnlp') {
             script {
-            sh """
-              pwd
-              ls -al
-              cat /workspace/docker-config/auth.json
-              buildah bud --build-arg PROJECT_NAME=${params.PROJECT_NAME} --build-arg VERSION=${params.VERSION} -t app:latest -f Dockerfile .
-              buildah push --authfile /workspace/docker-config/auth.json localhost/app:latest registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${params.VERSION}
-              """
-            }
+                // 获取当前分支名称并清理特殊字符
+                def branchName = env.BRANCH_NAME.replace('/', '-')
+
+                // 动态定义镜像标签
+                def imageTag = "registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${branchName}-${params.VERSION}"
+
+                sh """
+                  pwd
+                  ls -al
+                  cat /workspace/docker-config/auth.json
+                  buildah bud --build-arg PROJECT_NAME=${params.PROJECT_NAME} --build-arg VERSION=${params.VERSION} -t app:${branchName} -f Dockerfile .
+                  buildah push --authfile /workspace/docker-config/auth.json localhost/app:${branchName} ${imageTag}
+                """
+              }
           }
         }
     }
