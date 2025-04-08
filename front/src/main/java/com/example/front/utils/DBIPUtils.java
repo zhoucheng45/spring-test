@@ -3,9 +3,11 @@ package com.example.front.utils;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
 import com.maxmind.geoip2.record.Country;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Objects;
 
@@ -14,10 +16,10 @@ public class DBIPUtils {
 
     static {
         try {
-            String path = Objects.requireNonNull(DBIPUtils.class.getResource("/Country.mmdb")).getPath();
-            System.out.println(path);
+            ClassPathResource resource = new ClassPathResource("Country.mmdb");
+            InputStream inputStream = resource.getInputStream();
             reader = new DatabaseReader.Builder(
-                new File(path)
+                    inputStream
             ).build();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load DB-IP database", e);
