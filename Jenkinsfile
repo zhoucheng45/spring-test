@@ -78,7 +78,7 @@ pipeline {
         container('maven') {
           sh """
             pwd
-            ls -al ./front/src/resources/
+            ls -al
             mvn clean package -DskipTests=true
           """
         }
@@ -101,6 +101,7 @@ pipeline {
                 sh """
                   pwd
                   ls -al
+                  ls -al ./front/src/resources/
                   cat /workspace/docker-config/auth.json
                   buildah bud --build-arg PROJECT_NAME=${params.PROJECT_NAME} --build-arg VERSION=${params.VERSION} -t app:${branchName} -f Dockerfile .
                   buildah push --authfile /workspace/docker-config/auth.json localhost/app:${branchName} ${imageTag}
