@@ -15,6 +15,7 @@ public class DBIPUtils {
     static {
         try {
             String path = Objects.requireNonNull(DBIPUtils.class.getResource("/Country.mmdb")).getPath();
+            System.out.println(path);
             reader = new DatabaseReader.Builder(
                 new File(path)
             ).build();
