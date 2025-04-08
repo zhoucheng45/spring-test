@@ -1,16 +1,20 @@
 package com.example.front.controller;
 
 import com.example.front.client.BookClient;
+import com.example.front.utils.DBIPUtils;
+import com.maxmind.db.CHMCache;
+import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.maxmind.geoip2.model.CityResponse;
+import com.maxmind.geoip2.record.Country;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.util.Collection;
 
 import static feign.Util.CONTENT_ENCODING;
@@ -32,5 +36,14 @@ public class BookController {
             var c = b / a;
         }
         return bookClient.getBookById(id);
+    }
+
+
+    @GetMapping("/ip/query")
+    public Country queryIp(@RequestParam("ip") String ip) throws Exception {
+        Country country = DBIPUtils.getCountry(ip);
+
+        System.out.println(country);
+        return country;
     }
 }
