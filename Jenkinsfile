@@ -78,7 +78,7 @@ pipeline {
         container('maven') {
           sh """
             pwd
-            ls -al ./front
+            ls -al ./front/src/main/resources/
             mvn clean package -DskipTests=true
           """
         }
@@ -99,10 +99,6 @@ pipeline {
                 def imageTag = "registry-intl-vpc.cn-hongkong.aliyuncs.com/my-link/test:${params.PROJECT_NAME}-${branchName}-${shortCommitId}"
 
                 sh """
-                  pwd
-                  ls -al
-                  ls -al ./front/src/resources/
-                  cat /workspace/docker-config/auth.json
                   buildah bud --build-arg PROJECT_NAME=${params.PROJECT_NAME} --build-arg VERSION=${params.VERSION} -t app:${branchName} -f Dockerfile .
                   buildah push --authfile /workspace/docker-config/auth.json localhost/app:${branchName} ${imageTag}
                 """
