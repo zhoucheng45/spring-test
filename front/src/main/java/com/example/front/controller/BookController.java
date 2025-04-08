@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@RequestMapping("/front")
 @RestController
 public class BookController {
 
@@ -15,7 +16,7 @@ public class BookController {
     private BookClient bookClient;
 
 
-    @GetMapping("/front/books")
+    @GetMapping("/books")
     public String getBookById(@RequestParam("id") Long id){
         log.info("getBookById:{}",id);
         if(id == null) {
