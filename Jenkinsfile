@@ -78,7 +78,7 @@ pipeline {
         container('maven') {
           sh """
             pwd
-            ls -al
+            ls -al ./front
             mvn clean package -DskipTests=true
           """
         }
