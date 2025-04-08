@@ -7,13 +7,14 @@ import com.maxmind.geoip2.record.Country;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Objects;
 
 public class DBIPUtils {
     private static final DatabaseReader reader;
 
     static {
         try {
-            String path = DBIPUtils.class.getResource("/Country.mmdb").getPath();
+            String path = Objects.requireNonNull(DBIPUtils.class.getResource("/Country.mmdb")).getPath();
             reader = new DatabaseReader.Builder(
                 new File(path)
             ).build();

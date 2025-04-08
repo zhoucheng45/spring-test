@@ -1,0 +1,103 @@
+pipeline {
+
+  environment {
+    APP_NAME = 'sup-be'
+    GIT_BRANCH = "${env.BRANCH_NAME.replace('/', '_')}"
+    GITCOMMIT = "${env.GIT_COMMIT.substring(0,8)}"
+    MVN_ACTION = 'sudo mvn clean install -U -DskipTests -q'
+    GRADLE_ACTION = 'sudo gradle build --refresh-dependencies'
+
+  }
+
+  options {
+    buildDiscarder logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '1', daysToKeepStr: '10', numToKeepStr: '10')
+    gitLabConnection('gitlab-token')
+  }
+
+  agent any
+
+  post {
+    failure {
+      updateGitlabCommitStatus name: 'cicd', state: 'failed'
+    }
+    success {
+      updateGitlabCommitStatus name: 'cicd', state: 'success'
+    }
+    aborted {
+      updateGitlabCommitStatus name: 'cicd', state: 'canceled'
+    }
+  }
+
+
+
+
+  stages {
+
+    stage("SET ENVIRONMENT"){
+      steps {
+        script {
+          switch(env.BRANCH_NAME) {
+            case 'release/kube-pat':
+              env.REGISTRY = 'registry.cn-hongkong.aliyuncs.com'
+              env.REGISTRY_NAMESPACE = 'via-hongkong'
+              env.KUBE_NAMESPACE = 'via'
+              env.KUBECONFIG = '/k8s/mylink-pat/.kube/config'
+              env.KUBE_YAML = 'pat.yaml'
+              break
+            case 'release/kube-beta':
+              env.REGISTRY = 'registry.cn-hongkong.aliyuncs.com'
+              env.REGISTRY_NAMESPACE = 'via-hongkong'
+              env.KUBE_NAMESPACE = 'via'
+              env.KUBECONFIG = '/k8s/mylink-beta/.kube/config'
+              env.KUBE_YAML = 'beta.yaml'
+              break
+            case 'release/kube-uat':
+              env.REGISTRY = 'registry.cn-hongkong.aliyuncs.com'
+              env.REGISTRY_NAMESPACE = 'via-hongkong'
+              env.KUBE_NAMESPACE = 'via'
+              env.KUBECONFIG = '/k8s/mylink-uat/.kube/config'
+              env.KUBE_YAML = 'uat.yaml'
+              break
+            case 'release/kube':
+              env.REGISTRY = 'registry.cn-hongkong.aliyuncs.com'
+              env.REGISTRY_NAMESPACE = 'via-hongkong'
+              env.KUBE_NAMESPACE = 'via'
+              env.KUBECONFIG = '/k8s/via-pat/.kube/config'
+              env.KUBE_YAML = 'pro.yaml'
+              break
+            case 'release/kube-test':
+              env.REGISTRY = 'registry.cn-hongkong.aliyuncs.com'
+              env.REGISTRY_NAMESPACE = 'via-hongkong'
+              env.KUBE_NAMESPACE = 'via'
+              env.KUBECONFIG = '/k8s/via-uat/.kube/config'
+              env.KUBE_YAML = 'test.yaml'
+              break
+          }
+        }
+      }
+    }
+
+    stage('build & push') {
+      steps {
+        script {
+          env.DATE = sh (script: "date +'%Y%m%d%H%M'", returnStdout: true).trim()
+        }
+        sh "sudo mvn -v"
+        sh "sudo gradle -v"
+        sh "${MVN_ACTION}"
+        sh "sudo docker build -t $REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:${GIT_BRANCH}-${GITCOMMIT}-${DATE}-${BUILD_NUMBER} ."
+        sh "sudo docker push $REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:${GIT_BRANCH}-${GITCOMMIT}-${DATE}-${BUILD_NUMBER}"
+        sh "wget  https://yaml.via.cool/soft/${KUBE_YAML}  -O deployment.yaml"
+      }
+    }
+
+    stage('deploy to k8s') {
+      steps {
+        script {
+          sh "envsubst < deployment.yaml | kubectl --kubeconfig ${KUBECONFIG} apply -f -"
+        }
+      }
+    }
+
+  }
+}
