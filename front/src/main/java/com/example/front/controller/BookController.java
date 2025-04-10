@@ -19,11 +19,6 @@ public class BookController {
     @GetMapping("/books")
     public String getBookById(@RequestParam("id") Long id){
         log.info("getBookById:{}",id);
-        if(id == null) {
-            int a = 0;
-            int b = 4;
-            var c = b / a;
-        }
         return bookClient.getBookById(id);
     }
 
