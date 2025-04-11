@@ -2,10 +2,13 @@ package com.example.front.controller;
 
 import com.example.front.client.BookClient;
 import com.example.front.utils.DBIPUtils;
-import com.maxmind.geoip2.record.Country;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @Slf4j
 @RequestMapping("/front")
@@ -24,10 +27,9 @@ public class BookController {
 
 
     @GetMapping("/ip/query")
-    public Country queryIp(@RequestParam("ip") String ip) throws Exception {
-        Country country = DBIPUtils.getCountry(ip);
+    public Mono<Map<String, Object>> queryIp(@RequestParam("ip") String ip){
+        Map<String, Object> stringObjectMap = DBIPUtils.queryIpInfo(ip);
 
-        System.out.println(country);
-        return country;
+        return Mono.just(stringObjectMap);
     }
 }

@@ -6,7 +6,7 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 10.75.80.67:8848
+        server-addr: localhost:8848
         file-extension: yaml
         namespace: public
         group: DEFAULT_GROUP
@@ -15,7 +15,7 @@ spring:
       discovery:
         metadata:
           management.context-path: /actuator  # 确保健康检查路径正确
-        server-addr: 10.75.80.67:8848
+        server-addr: localhost:8848
         namespace: public
         group: DEFAULT_GROUP
         username: admin
