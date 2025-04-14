@@ -19,6 +19,8 @@ public class BookController {
         log.info("getBookById:{}",id);
         QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
-        return bookMapper.selectOne(queryWrapper);
+        Book book = bookMapper.selectOne(queryWrapper);
+        log.info("getBookById:{}", book);
+        return book;
     }
 }
