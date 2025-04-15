@@ -8,6 +8,16 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+    # HikariCP连接池配置参数设置
+    hikari:
+      # 定义连接池中允许的最大连接数，此处设置为20
+      maximum-pool-size: 20
+      # 保持的最小空闲连接数，确保至少5个连接处于就绪状态
+      minimum-idle: 5
+      # 连接在空闲30秒后被回收（单位：毫秒）
+      idle-timeout: 30000
+      # 连接的最大生命周期为30分钟（单位：毫秒）
+      max-lifetime: 1800000
 
   cloud:
     nacos:
