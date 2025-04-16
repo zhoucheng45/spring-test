@@ -34,6 +34,6 @@ public class BookController {
     public Mono<Map<String, Object>> queryIp(@RequestParam("ip") String ip){
         Map<String, Object> stringObjectMap = DBIPUtils.queryIpInfo(ip);
 
-        return Mono.just(stringObjectMap);
+        return Mono.justOrEmpty(stringObjectMap);
     }
 }

@@ -15,19 +15,19 @@ public class DBIPUtils {
     private static  DatabaseReader reader;
     private static Reader reader1;
     static {
-//        try {
+        try {
 //            ClassPathResource resource = new ClassPathResource("Country.mmdb");
 //            InputStream inputStream = resource.getInputStream();
 //            reader = new DatabaseReader.Builder(
 //                    inputStream
 //            ).withCache(new CHMCache()).build();
 
-//            ClassPathResource resource1 = new ClassPathResource("ipinfo_lite.mmdb");
-//            reader1 = new Reader(resource1.getInputStream(), new CHMCache());
+            ClassPathResource resource1 = new ClassPathResource("ipinfo_lite.mmdb");
+            reader1 = new Reader(resource1.getInputStream(), new CHMCache());
 
-//        } catch (IOException e) {
-//            throw new RuntimeException("Failed to load DB-IP database", e);
-//        }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load DB-IP database", e);
+        }
     }
 
     public static String getCountryCode(String ip) {
